@@ -1,1 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Builder Dashboard</title>
+</head>
+<body>
 
+<h1>Builder Dashboard</h1>
+
+<h2>Inventory</h2>
+<button onclick="loadInventory()">Refresh Inventory</button>
+<div id="inventory"></div>
+
+<h2>Request Inventory</h2>
+<input id="item" placeholder="Item name">
+<input id="qty" placeholder="Quantity">
+<button onclick="requestItem()">Submit Request</button>
+
+<h2>Leave Note</h2>
+<input id="note" placeholder="Write note">
+<button onclick="sendNote()">Send Note</button>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwvwpiO-xoc2GQN8-Mvf70wQ1SXqV0MQvk9Q0Tx3jIVxl47VRWbpeU4eYP9WFoyGv3I/exec;
+
+function loadInventory() {
+  fetch(API_URL + "?type=inventory")
+    .then(res => res.json())
+    .then(data => {
+      let html = "<ul>";
+      data.forEach(row => {
+        html += `<li>${row[0]} - Qty: ${row[1]}</li>`;
+      });
+      html += "</ul>";
+      document.getElementById("inventory").innerHTML = html;
+    });
+}
+
+function requestItem() {
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      type: "request",
+      item: document.getElementById("item").value,
+      quantity: document.getElementById("qty").value
+    })
+  });
+  alert("Request sent!");
+}
+
+function sendNote() {
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      type: "note",
+      note: document.getElementById("note").value
+    })
+  });
+  alert("Note sent!");
+}
+</script>
+
+</body>
+</html>
